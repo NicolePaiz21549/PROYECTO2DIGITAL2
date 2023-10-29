@@ -1,11 +1,10 @@
-//***************************************************************************************************************************************
-/* Librería para el uso de la pantalla ILI9341 en modo 8 bits
- * Basado en el código de martinayotte - https://www.stm32duino.com/viewtopic.php?t=637
- * Adaptación, migración y creación de nuevas funciones: Pablo Mazariegos y José Morales
- * Con ayuda de: José Guerra
- * IE3027: Electrónica Digital 2 - 2019
- */
-//***************************************************************************************************************************************
+//***********************************************************************************
+//Universidad del Valle de Guatemala
+//Dulce Nicole Monney Paiz, 21549
+//BE3029 - Electrónica Digital 2
+//Proyecto 2 – SPI, TFT & SD
+//*********************************************************************************** 
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <TM4C123GH6PM.h>
