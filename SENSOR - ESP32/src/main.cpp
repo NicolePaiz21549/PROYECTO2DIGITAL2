@@ -42,16 +42,16 @@ void setup() {
 //Loop principal
 void loop() {
 // Display de temperatura en monitor serial 
-int tempInt = int(TempC);
-int tempDecimal = int((TempC - tempInt) * 10); //Cálculo del decimal del valor de temperatura, lo multiplica por 10 para convertirlo en una fracción de 10 grados y almacena el resultado como un número entero en la variable tempDecimal.
-int tempDecimalTens = tempInt / 10;
-int tempDecimalUnits = tempInt % 10;
+//int tempInt = int(TempC);
+//int tempDecimal = int((TempC - tempInt) * 10); //Cálculo del decimal del valor de temperatura, lo multiplica por 10 para convertirlo en una fracción de 10 grados y almacena el resultado como un número entero en la variable tempDecimal.
+//int tempDecimalTens = tempInt / 10;
+//int tempDecimalUnits = tempInt % 10;
 
 //Lectura del valor LM35_ADC
 TempC = ((analogRead(LM35_GPIO_PIN) + 70) * (5000.0/ 4096.0)); // Sumatoria de un valor OFFSET (factor de correción) para el valor análogo original multiplicado por el voltaje de 5V por pin Vin para la fórmula dividido la resolución ADC de 12bits
 TempC = TempC / 10.0; // División dentro de 10 representando los 10mV del LM35 ya que cada cambio de 10mV representa un cambio de 1℃
 double Temperature = TempC;
-Serial.print(TempC); //Impresión de backup
-Serial.println();
+Serial.print("LM35: ");
+Serial.println(TempC); //Impresión de backup
 }
 //***********************************************************************************
