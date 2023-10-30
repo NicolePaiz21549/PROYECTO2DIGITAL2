@@ -38,7 +38,7 @@ int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};*/
 //***************************************************************************************************************************************
 
 //Variables globales 
-int receivedvaluesensor; //Variable determinada para recibir el valor del sensor LM35
+float receivedvaluesensor; //Variable determinada para recibir el valor del sensor LM35
 int clave=0; //Aviso al ESP32 de presión del botón BSENSE
 unsigned long lastDebounceTime=0;
 unsigned long debounceDelay=50;
@@ -67,7 +67,7 @@ void loop(){
     Serial2.print("∖n");
     }
     if (Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
-        receivedvaluesensor=Serial2.parseInt();
+        receivedvaluesensor=Serial2.parseFloat();
         Serial.print("LM35:");
         Serial.println(receivedvaluesensor);
         }
