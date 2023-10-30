@@ -41,6 +41,7 @@ int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};*/
 int receivedvaluesensor=0; //Variable determinada para recibir el valor del sensor LM35
 unsigned long lastDebounceTime=0;
 unsigned long debounceDelay=50;
+bool requested=false; //Bandera para identificar si se ha realizado un pedido de valor aka request
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -60,11 +61,19 @@ void loop(){
   //Serial.print("∖n");
   if(digitalRead(BSENSE) == LOW && (millis()-lastDebounceTime)>debounceDelay){
     lastDebounceTime = millis();
-    //if(Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
-    receivedvaluesensor=Serial2.parseInt();
-    Serial.print("LM35: "); //Impresión del sensor LM35 en el monitor serial
-    Serial.println(receivedvaluesensor);
-      //}
-  }
-}
+    Serial2.print('R'); //Pedir al ESP32 el valor del sensor
+    Serial2.print("∖n");
+    
+    //if(requested){//Verificar si no se ha realizado un pedido anteriormente
+    //Serial2.println('R'); 
+    //requested=true; //Bandera en positivo para enviar múltiples pédidos
+    //}
+    /*if (Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
+      String response=ReadStringUrial2.rntil('\n');
+      if(response=="LM35"){
+        receivedvaluesensor=Serial2.parseInt();
+        Serial.print(response);
+        Serial.println(receivedvaluesensor);*/
+        }
+        }
 //***************************************************************************************************************************************
