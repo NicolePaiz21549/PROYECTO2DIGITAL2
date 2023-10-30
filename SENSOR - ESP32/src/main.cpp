@@ -20,6 +20,7 @@
 int LM35_Input = 0;
 float TempC = 0.0;
 float Voltage = 0.0;
+String request;
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -34,7 +35,8 @@ uint32_t readADC_Cal(int ADC_Raw) {
 //Configuración
 void setup() {
   Serial.begin(115200); //Comunicación con el monitor serial/PC
-  Serial2.begin(115200, SERIAL_8N1, RXp2, TXp2); //Comunicación UART 2 con la Tiva C 
+  Serial2.begin(115200);
+  //Serial2.begin(115200, SERIAL_8N1, RXp2, TXp2); //Comunicación UART 2 con la Tiva C 
   pinMode(LM35_GPIO_PIN, INPUT); //Inicialización del pin LM35
 //pinMode(BUTTON_PIN, INPUT_PULLUP); //Botón con resistencia de pull-up interna
   }
@@ -51,7 +53,18 @@ void loop() {
 TempC = ((analogRead(LM35_GPIO_PIN) + 70) * (5000.0/ 4096.0)); // Sumatoria de un valor OFFSET (factor de correción) para el valor análogo original multiplicado por el voltaje de 5V por pin Vin para la fórmula dividido la resolución ADC de 12bits
 TempC = TempC / 10.0; // División dentro de 10 representando los 10mV del LM35 ya que cada cambio de 10mV representa un cambio de 1℃
 double Temperature = TempC;
-Serial.print("LM35: ");
-Serial.println(TempC); //Impresión de backup
+//Serial.print("LM35: ");
+//Serial.println(TempC); //Impresión de backup
+
+if(Serial2.available()){
+  request = Serial2.readStringUntil('\n');
+  if(request=="R"){ //La Tiva C envió un comando
+    Serial2.print("LM35:");
+    Serial2.println(int(TempC)); //Enviar el valor del sensor LM35 a la Tiva C
+    Serial.print("LM35:");
+    Serial.println(int(TempC));
+    delay(100); //Delay para que la Tiva C pueda leer la respuesta
+  }
+}
 }
 //***********************************************************************************
