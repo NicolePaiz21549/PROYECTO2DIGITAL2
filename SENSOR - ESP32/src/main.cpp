@@ -18,9 +18,10 @@
 
 //Variables globales 
 int LM35_Input = 0;
-float TempC = 0.0;
+float TempC=0.0;
 float Voltage = 0.0;
 int request=0;
+float Temperatura = 0;
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -50,8 +51,8 @@ void loop() {
 //int tempDecimalUnits = tempInt % 10;
 
 //Lectura del valor LM35_ADC
-TempC = ((analogRead(LM35_GPIO_PIN) + 70) * (5000.0/ 4096.0)); // Sumatoria de un valor OFFSET (factor de correción) para el valor análogo original multiplicado por el voltaje de 5V por pin Vin para la fórmula dividido la resolución ADC de 12bits
-TempC = TempC / 10.0; // División dentro de 10 representando los 10mV del LM35 ya que cada cambio de 10mV representa un cambio de 1℃
+Temperatura = ((analogRead(LM35_GPIO_PIN) + 70) * (5000.0/ 4096.0)); // Sumatoria de un valor OFFSET (factor de correción) para el valor análogo original multiplicado por el voltaje de 5V por pin Vin para la fórmula dividido la resolución ADC de 12bits
+TempC = Temperatura / 10.0; // División dentro de 10 representando los 10mV del LM35 ya que cada cambio de 10mV representa un cambio de 1℃
 double Temperature = TempC;
 //Serial.print("LM35: ");
 //Serial.println(TempC); //Impresión de backup
@@ -59,7 +60,7 @@ double Temperature = TempC;
 if(Serial2.available()){
   request = Serial2.parseInt();
   if(request==1){ //La Tiva C envió un comando
-    Serial2.print("LM35:");
+    //Serial2.print("LM35:");
     Serial2.println(TempC); //Enviar el valor del sensor LM35 a la Tiva C
     Serial.print("LM35:");
     Serial.println(TempC);
