@@ -66,7 +66,7 @@ void loop(){
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
     Serial2.print("∖n");
     }
-    if (Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
+    if (Serial2.available()){ //Utilizar Serial2 para comunicarse con el ESP32
         receivedvaluesensor=Serial2.parseFloat();
         Serial.print("LM35:");
         Serial.println(receivedvaluesensor);
