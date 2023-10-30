@@ -32,18 +32,39 @@
 #define LCD_WR PD_3
 #define LCD_RD PE_1
 int DPINS[] = {PB_0, PB_1, PB_2, PB_3, PB_4, PB_5, PB_6, PB_7};*/  
+#define BSENSE PF_0 //Botón para preguntar el valor del sensor al ESP32
+#define RXp2 PD6
+#define TXp2 PD7
 //***************************************************************************************************************************************
 
 //Variables globales 
+int receivedvaluesensor=0; //Variable determinada para recibir el valor del sensor LM35
+unsigned long lastDebounceTime=0;
+unsigned long debounceDelay=50;
 //***********************************************************************************
 
 //Prototipos de funciones
 //***************************************************************************************************************************************
 
 //Configuración
-void setup(){}
+void setup(){
+  Serial.begin(115200); //Inicialización de la comunicación serial con el monitor serial
+  Serial2.begin(115200); //Comunicación UART con ESP32
+  pinMode(BSENSE, INPUT_PULLUP); //Configuración de SW1
+  }
 //***************************************************************************************************************************************
 
 //Loop principal
-void loop(){}
+void loop(){
+  //Verificación de BSENSE 
+  //Serial.print("∖n");
+  if(digitalRead(BSENSE) == LOW && (millis()-lastDebounceTime)>debounceDelay){
+    lastDebounceTime = millis();
+    if(Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
+      receivedvaluesensor=Serial2.parseInt();
+      Serial.print("LM35: "); //Impresión del sensor LM35 en el monitor serial
+      Serial.println(receivedvaluesensor);
+      }
+  }
+}
 //***************************************************************************************************************************************
