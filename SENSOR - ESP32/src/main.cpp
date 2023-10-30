@@ -61,7 +61,7 @@ if(Serial2.available()){
   request = Serial2.parseInt();
   if(request==1){ //La Tiva C envió un comando
     //Serial2.print("LM35:");
-    Serial2.println(TempC); //Enviar el valor del sensor LM35 a la Tiva C
+    Serial2.print(TempC); //Enviar el valor del sensor LM35 a la Tiva C
     Serial.print("LM35:");
     Serial.println(TempC);
     delay(100); //Delay para que la Tiva C pueda leer la respuesta
