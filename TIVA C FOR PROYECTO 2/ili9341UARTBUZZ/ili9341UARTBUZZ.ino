@@ -60,11 +60,11 @@ void loop(){
   //Serial.print("∖n");
   if(digitalRead(BSENSE) == LOW && (millis()-lastDebounceTime)>debounceDelay){
     lastDebounceTime = millis();
-    if(Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
-      receivedvaluesensor=Serial2.parseInt();
-      Serial.print("LM35: "); //Impresión del sensor LM35 en el monitor serial
-      Serial.println(receivedvaluesensor);
-      }
+    //if(Serial2.available()>0){ //Utilizar Serial2 para comunicarse con el ESP32
+    receivedvaluesensor=Serial2.parseInt();
+    Serial.print("LM35: "); //Impresión del sensor LM35 en el monitor serial
+    Serial.println(receivedvaluesensor);
+      //}
   }
 }
 //***************************************************************************************************************************************
