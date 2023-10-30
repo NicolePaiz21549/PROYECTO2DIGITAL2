@@ -20,7 +20,7 @@
 int LM35_Input = 0;
 float TempC = 0.0;
 float Voltage = 0.0;
-String request;
+int request=0;
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -57,12 +57,12 @@ double Temperature = TempC;
 //Serial.println(TempC); //Impresión de backup
 
 if(Serial2.available()){
-  request = Serial2.readStringUntil('\n');
-  if(request=="R"){ //La Tiva C envió un comando
+  request = Serial2.parseInt();
+  if(request==1){ //La Tiva C envió un comando
     Serial2.print("LM35:");
-    Serial2.println(int(TempC)); //Enviar el valor del sensor LM35 a la Tiva C
+    Serial2.println(TempC); //Enviar el valor del sensor LM35 a la Tiva C
     Serial.print("LM35:");
-    Serial.println(int(TempC));
+    Serial.println(TempC);
     delay(100); //Delay para que la Tiva C pueda leer la respuesta
   }
 }
