@@ -116,18 +116,23 @@ void loop(){
    //Verificación de BSD para guardar en la SD
    if(digitalRead(BSD)==LOW && (millis()-lastDebounceTime)>debounceDelay){
     lastDebounceTime=millis();
-    if(dataFile){
+    //if(dataFile){
       dataFile=SD.open("sensor_data.txt", FILE_WRITE); //Apertura del archivo en modo escritura
-      if(dataFile){
+      if(!dataFile){
         dataFile.print("LM35:");
         dataFile.println(receivedvaluesensor);
         dataFile.close(); //Se cierra el archivo
-        Serial.println("Se ha guardado exitosamente la medición de la temperatura en la tarjeta SD.");
+        Serial.print("Se ha guardado exitosamente la medición de la temperatura en la tarjeta SD.");
+        //Serial.println("");
+        //Serial.println("");
+        root=SD.open("/");
+        printDirectory(root, 0);
+        //Serial.println("");
         //Agregar melodía indicativa que se almacenó un dato en la memoria SD
         } else {
           Serial.println("Error al abrir y crear el archivo en la tarjeta SD.");
             }
-            }
+            //}
         }
 }
 //***************************************************************************************************************************************
