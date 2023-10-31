@@ -66,6 +66,7 @@ if(Serial2.available()){
     Serial.println(TempC);
     delay(100); //Delay para que la Tiva C pueda leer la respuesta
   }
+  //request = 0;
 }
 }
 //***********************************************************************************
