@@ -109,6 +109,21 @@ void loop() {
     clave=1; 
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
     Serial2.print("∖n");
+    //Impresión temperatura 
+    int tempInt = receivedvaluesensor*100;
+    //Cálculos mediante módulo
+    int tempunidad = (tempInt/1)%10; //Cálculo del decimal del valor de temperatura, lo multiplica por 10 para convertirlo en una fracción de 10 grados y almacena el resultado como un número entero en la variable tempDecimal.
+    int tempdecena = (tempInt/10)%10;
+    int tempdecimal = (tempInt/100)%10;
+    int tempcentena = (tempInt/1000)%10;
+
+    String UNI=String(tempunidad);
+    String DEK=String(tempdecena);
+    String DES=String(tempdecimal);
+    String CEN=String(tempcentena);
+
+    String tmp=CEN+DES+"."+DEK+UNI;
+    LCD_Print(tmp, 120, 120, 2, 0x1105, 0xF7BD);
     }
     if (Serial2.available()){ //Utilizar Serial2 para comunicarse con el ESP32
         receivedvaluesensor=Serial2.parseFloat();
