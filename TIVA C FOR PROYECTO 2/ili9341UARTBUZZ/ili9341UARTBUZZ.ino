@@ -66,7 +66,7 @@ unsigned long debounceDelay=50;
 int melody1[] = { //Melodía medición
   NOTE_A4, NOTE_C5, NOTE_B4, NOTE_E4};
 int noteDurations1[] = {
-2, 2, 2, 4,
+1, 1, 1, 2,
 };
 
 int melody2[] = { //Melodía SD
@@ -74,7 +74,6 @@ int melody2[] = { //Melodía SD
 int noteDurations2[] = {
 4, 4, 4, 2,
 };
-  
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -119,7 +118,6 @@ void setup() {
   LCD_Init();
   LCD_Clear(0x00);
 
-  FillRect(0, 0, 50, 50, 0x421b);
   FillRect(0, 0, 319, 210, 0x421b);
   String text1 = "Temperatura:";
   LCD_Print(text1, 65, 100, 2, 0xffff, 0x421b);
@@ -136,7 +134,7 @@ void loop() {
     clave=1; 
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
     Serial2.print("∖n");
-    melodysensor();
+    //melodysensor();
     //Impresión de temperatura 
     int tempInt = receivedvaluesensor*100;
     //Cálculos mediante módulo
@@ -157,7 +155,7 @@ void loop() {
         receivedvaluesensor=Serial2.parseFloat();
         Serial.print("LM35:");
         Serial.println(receivedvaluesensor);
-        melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor 
+        melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor
         }
         
    //Verificación de BSD para guardar en la SD
@@ -177,6 +175,10 @@ void loop() {
           Serial.println("Error al abrir el archivo datalog.txt y no se ha guardado la medida de temperatura");
         }
         melodySD();
+        String text2 = "Almacenada en SD:D";
+        LCD_Print(text2, 20, 150, 2, 0xffff, 0x421b);
+        delay(1000);
+        FillRect(20, 150, 2000, 40, 0x421b);
         }
         delay(20);
 }
