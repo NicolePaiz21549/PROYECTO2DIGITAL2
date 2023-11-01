@@ -134,7 +134,13 @@ void loop() {
     clave=1; 
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
     Serial2.print("∖n");
-    //melodysensor();
+  }
+  
+  if (Serial2.available()){ //Utilizar Serial2 para comunicarse con el ESP32
+    receivedvaluesensor=Serial2.parseFloat();
+    Serial.print("LM35:");
+    Serial.println(receivedvaluesensor);
+    melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor
     //Impresión de temperatura 
     int tempInt = receivedvaluesensor*100;
     //Cálculos mediante módulo
@@ -149,14 +155,7 @@ void loop() {
     String CEN=String(tempcentena);
 
     String tmp=CEN+DES+"."+DEK+UNI;
-    LCD_Print(tmp, 120, 120, 2, 0x1105, 0xF7BD);
-    }
-    if (Serial2.available()){ //Utilizar Serial2 para comunicarse con el ESP32
-        receivedvaluesensor=Serial2.parseFloat();
-        Serial.print("LM35:");
-        Serial.println(receivedvaluesensor);
-        melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor
-        }
+    LCD_Print(tmp, 120, 120, 2, 0x1105, 0xF7BD);}
         
    //Verificación de BSD para guardar en la SD
    if(digitalRead(BSD)==LOW && (millis()-lastDebounceTime)>debounceDelay){
