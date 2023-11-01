@@ -6,11 +6,13 @@
 //***************************************************************************************************************************************
 
 //Librerías
+//Correspondientes al almacenamiento SD
 #include <SPI.h>
 #include <SD.h>
 
-#include "pitches.h"
+#include "pitches.h" //Notas con frecuencias del buzzer
 
+//Correspondientes a la pantalla TFT ili9341
 #include <stdint.h>
 #include <stdbool.h>
 #include <TM4C123GH6PM.h>
@@ -32,19 +34,23 @@
 //*********************************************************************************** 
 
 //Definición de pines
-/*SPIO en 0
-MOSI a PA_5
-MISO a PA_4
-SCK a PA_2
+/* Colocación de pines en la pantalla TFT ili9341
+SPIO en 0
+MOSI a PA_5 (Tanto general como para SD)
+MISO a PA_4 (Tanto general como para SD)
+SCK a PA_2 (Tanto general como para SD)
 CS a PA_3 
 SD_CS a PB_3*/
 
+//Para pantalla TFT ili9341
 #define LCD_RST PD_0
 #define LCD_DC PD_1
 #define LCD_CS PA_3 
 
 #define BSENSE PF_4 //Botón para preguntar el valor del sensor al ESP32 - SW1
 #define BSD PF_0 //Botón para guardar el valor de la medición  del sensor en el SD - SW2
+
+//Definición de pines para comunicación serial UART 2 entre ESP32 y Tiva C
 #define RXp2 PD6
 #define TXp2 PD7
 #define CS_PIN PB_3 //aka pin 12 para el chip select del SD
@@ -59,11 +65,11 @@ SD_CS a PB_3*/
 
 //Variables globales 
 float receivedvaluesensor; //Variable determinada para recibir el valor del sensor LM35 y que se enviará a la ILI9341 & a la SD
-int clave=0; //Aviso al ESP32 de presión del botón BSENSE
+int clave=0; //Aviso al ESP32 de presión del botón BSENSE aka flag
 unsigned long lastDebounceTime=0;
 unsigned long debounceDelay=50;
 
-int melody1[] = { //Melodía medición
+int melody1[] = { //Melodía medición sensor
   NOTE_A4, NOTE_C5, NOTE_B4, NOTE_E4};
 int noteDurations1[] = {
 1, 1, 1, 2,
@@ -77,6 +83,7 @@ int noteDurations2[] = {
 //***********************************************************************************
 
 //Prototipos de funciones
+//Funciones específicas de la pantalla TFT ili9341
 void LCD_Init(void);
 void LCD_CMD(uint8_t cmd);
 void LCD_DATA(uint8_t data);
@@ -91,6 +98,7 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
 
+//Funciones musicales del buzzer
 void melodysensor(void);
 void melodySD(void);
 //***************************************************************************************************************************************
@@ -111,10 +119,11 @@ void setup() {
   //Configuración de los SW  
   pinMode(BSENSE, INPUT_PULLUP); //Configuración de SW1
   pinMode(BSD, INPUT_PULLUP); //Configuración de SW1
-  pinMode(RED_LED, OUTPUT);
+  pinMode(RED_LED, OUTPUT); //LED de verificación del funcionamiento del BSENSE
   pinMode(buzzerpin, OUTPUT);
-  
-  Serial.println("Inicio");
+
+  //Interfaz gráfica de la pantalla TFT ili9341
+  Serial.println("Inicio"); 
   LCD_Init();
   LCD_Clear(0x00);
 
@@ -143,18 +152,19 @@ void loop() {
     melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor
     //Impresión de temperatura 
     int tempInt = receivedvaluesensor*100;
-    //Cálculos mediante módulo
-    int tempunidad = (tempInt/1)%10; //Cálculo del decimal del valor de temperatura, lo multiplica por 10 para convertirlo en una fracción de 10 grados y almacena el resultado como un número entero en la variable tempDecimal.
+    //Cálculos mediante módulo para imprimir el valor flotante obtenido de la medición de la temperatura a entero
+    int tempunidad = (tempInt/1)%10; 
     int tempdecena = (tempInt/10)%10;
     int tempdecimal = (tempInt/100)%10;
     int tempcentena = (tempInt/1000)%10;
 
+    //Transformación a string del entero obtenido del valor flotante de la medición
     String UNI=String(tempunidad);
     String DEK=String(tempdecena);
     String DES=String(tempdecimal);
     String CEN=String(tempcentena);
 
-    String tmp=CEN+DES+"."+DEK+UNI;
+    String tmp=CEN+DES+"."+DEK+UNI; //Impresión en la pantalla TFT ili9341
     LCD_Print(tmp, 120, 120, 2, 0x1105, 0xF7BD);}
         
    //Verificación de BSD para guardar en la SD
@@ -167,13 +177,12 @@ void loop() {
         dataFile.close(); //Se cierra el archivo
         Serial.println("Se ha guardado exitosamente la medición de la temperatura en la tarjeta SD.");
         Serial.println(receivedvaluesensor);
-        //Agregar melodía indicativa que se almacenó un dato en la memoria SD
         }
         //Si no fue posible abrir el archivo→ERROR
         else{
           Serial.println("Error al abrir el archivo datalog.txt y no se ha guardado la medida de temperatura");
         }
-        melodySD();
+        melodySD(); //Melodía indicativa de que el valor fue guardado en la SD
         String text2 = "Almacenada en SD:D";
         LCD_Print(text2, 20, 150, 2, 0xffff, 0x421b);
         delay(1000);
@@ -182,6 +191,7 @@ void loop() {
         delay(20);
 }
 
+//FUNCIONES PARA EL FUNCIONAMIENTO DE LA PANTALLLA TFT ILI9341
 //***************************************************************************************************************************************
 // Función para inicializar LCD
 //***************************************************************************************************************************************
@@ -495,6 +505,7 @@ void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int 
     }
   digitalWrite(LCD_CS, HIGH);
 }
+//***************************************************************************************************************************************
 
 //Funciones musicales 
 void melodysensor(void){
