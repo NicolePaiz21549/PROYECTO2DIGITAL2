@@ -12,7 +12,8 @@
 
 //Definición de pines
 #define LM35_GPIO_PIN 35 //Pin para el sensor LM35
-#define RXp2 16
+//Definición de pines para comunicación serial UART 2 entre ESP32 y Tiva C
+#define RXp2 16 
 #define TXp2 17
 //***********************************************************************************
 
@@ -20,7 +21,7 @@
 int LM35_Input = 0;
 float TempC=0.0;
 float Voltage = 0.0;
-int request=0;
+int request=0; //Comando para activar bandera de envio del valor medido por el sensor
 float Temperatura = 0;
 //***********************************************************************************
 
@@ -36,10 +37,8 @@ uint32_t readADC_Cal(int ADC_Raw) {
 //Configuración
 void setup() {
   Serial.begin(115200); //Comunicación con el monitor serial/PC
-  Serial2.begin(115200);
-  //Serial2.begin(115200, SERIAL_8N1, RXp2, TXp2); //Comunicación UART 2 con la Tiva C 
+  Serial2.begin(115200); 
   pinMode(LM35_GPIO_PIN, INPUT); //Inicialización del pin LM35
-//pinMode(BUTTON_PIN, INPUT_PULLUP); //Botón con resistencia de pull-up interna
   }
 
 //Loop principal
