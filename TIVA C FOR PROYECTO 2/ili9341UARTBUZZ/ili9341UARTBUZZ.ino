@@ -8,6 +8,9 @@
 //Librerías
 #include <SPI.h>
 #include <SD.h>
+
+#include "pitches.h"
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <TM4C123GH6PM.h>
@@ -45,6 +48,13 @@ SD_CS a PB_3*/
 #define RXp2 PD6
 #define TXp2 PD7
 #define CS_PIN PB_3 //aka pin 12 para el chip select del SD
+
+#define NOTE_A4  440
+#define NOTE_B4  494
+#define NOTE_E4  330
+#define NOTE_C5  329
+#define NOTE_G5  784
+#define buzzerpin 40
 //***************************************************************************************************************************************
 
 //Variables globales 
@@ -52,6 +62,19 @@ float receivedvaluesensor; //Variable determinada para recibir el valor del sens
 int clave=0; //Aviso al ESP32 de presión del botón BSENSE
 unsigned long lastDebounceTime=0;
 unsigned long debounceDelay=50;
+
+int melody1[] = { //Melodía medición
+  NOTE_A4, NOTE_C5, NOTE_B4, NOTE_E4};
+int noteDurations1[] = {
+2, 2, 2, 4,
+};
+
+int melody2[] = { //Melodía SD
+  NOTE_C5, NOTE_C5, NOTE_C5, NOTE_G5};
+int noteDurations2[] = {
+4, 4, 4, 2,
+};
+  
 //***********************************************************************************
 
 //Prototipos de funciones
@@ -68,6 +91,9 @@ void LCD_Print(String text, int x, int y, int fontSize, int color, int backgroun
 
 void LCD_Bitmap(unsigned int x, unsigned int y, unsigned int width, unsigned int height, unsigned char bitmap[]);
 void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int columns, int index, char flip, char offset);
+
+void melodysensor(void);
+void melodySD(void);
 //***************************************************************************************************************************************
 
 //Configuración
@@ -87,6 +113,7 @@ void setup() {
   pinMode(BSENSE, INPUT_PULLUP); //Configuración de SW1
   pinMode(BSD, INPUT_PULLUP); //Configuración de SW1
   pinMode(RED_LED, OUTPUT);
+  pinMode(buzzerpin, OUTPUT);
   
   Serial.println("Inicio");
   LCD_Init();
@@ -104,12 +131,13 @@ void setup() {
 void loop() {
   //Verificación de BSENSE para realizar la medición del sensor
   if(digitalRead(BSENSE) == LOW && (millis()-lastDebounceTime)>debounceDelay){
-    digitalWrite(RED_LED, HIGH);
+    digitalWrite(RED_LED, HIGH); 
     lastDebounceTime = millis();
     clave=1; 
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
     Serial2.print("∖n");
-    //Impresión temperatura 
+    melodysensor();
+    //Impresión de temperatura 
     int tempInt = receivedvaluesensor*100;
     //Cálculos mediante módulo
     int tempunidad = (tempInt/1)%10; //Cálculo del decimal del valor de temperatura, lo multiplica por 10 para convertirlo en una fracción de 10 grados y almacena el resultado como un número entero en la variable tempDecimal.
@@ -129,7 +157,7 @@ void loop() {
         receivedvaluesensor=Serial2.parseFloat();
         Serial.print("LM35:");
         Serial.println(receivedvaluesensor);
-        //Agregar melodía indicativa de que se realizó una medición con el sensor 
+        melodysensor(); //Agregar melodía indicativa de que se realizó una medición con el sensor 
         }
         
    //Verificación de BSD para guardar en la SD
@@ -148,6 +176,7 @@ void loop() {
         else{
           Serial.println("Error al abrir el archivo datalog.txt y no se ha guardado la medida de temperatura");
         }
+        melodySD();
         }
         delay(20);
 }
@@ -465,3 +494,24 @@ void LCD_Sprite(int x, int y, int width, int height, unsigned char bitmap[],int 
     }
   digitalWrite(LCD_CS, HIGH);
 }
+
+//Funciones musicales 
+void melodysensor(void){
+  for (int thisNote = 0; thisNote < 4; thisNote++) {
+    int noteDuration = 100/noteDurations1[thisNote];
+    tone(buzzerpin, melody1[thisNote],noteDuration);
+    int pauseBetweenNotes = noteDuration + 50;     //delay between pulse
+    delay(pauseBetweenNotes);
+    noTone(buzzerpin);         // stop the tone playing
+  }
+  }
+
+void melodySD(void){
+  for (int thisNote = 0; thisNote < 4; thisNote++) {
+    int noteDuration = 100/noteDurations2[thisNote];
+    tone(buzzerpin, melody2[thisNote],noteDuration);
+    int pauseBetweenNotes = noteDuration + 50;     //delay between pulse
+    delay(pauseBetweenNotes);
+    noTone(buzzerpin);         // stop the tone playing
+  }
+  }
