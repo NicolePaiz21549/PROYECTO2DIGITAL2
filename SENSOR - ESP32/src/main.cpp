@@ -37,7 +37,7 @@ uint32_t readADC_Cal(int ADC_Raw) {
 //Configuración
 void setup() {
   Serial.begin(115200); //Comunicación con el monitor serial/PC
-  Serial2.begin(115200); 
+  Serial2.begin(115200); //Comunicación UART 2 con la Tiva C
   pinMode(LM35_GPIO_PIN, INPUT); //Inicialización del pin LM35
   }
 
