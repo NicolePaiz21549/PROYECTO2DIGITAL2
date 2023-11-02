@@ -138,7 +138,7 @@ void setup() {
 void loop() {
   //Verificación de BSENSE para realizar la medición del sensor
   if(digitalRead(BSENSE) == LOW && (millis()-lastDebounceTime)>debounceDelay){
-    digitalWrite(RED_LED, HIGH); 
+    digitalWrite(RED_LED, HIGH); //Control LED
     lastDebounceTime = millis();
     clave=1; 
     Serial2.print(clave); //Pedir al ESP32 el valor del sensor
