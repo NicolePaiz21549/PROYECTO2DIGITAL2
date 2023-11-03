@@ -512,9 +512,9 @@ void melodysensor(void){
   for (int thisNote = 0; thisNote < 4; thisNote++) {
     int noteDuration = 100/noteDurations1[thisNote];
     tone(buzzerpin, melody1[thisNote],noteDuration);
-    int pauseBetweenNotes = noteDuration + 50;     //delay between pulse
+    int pauseBetweenNotes = noteDuration + 50;     //retraso entre pulsos
     delay(pauseBetweenNotes);
-    noTone(buzzerpin);         // stop the tone playing
+    noTone(buzzerpin);         //  detener el sonido del tono
   }
   }
 
@@ -522,8 +522,8 @@ void melodySD(void){
   for (int thisNote = 0; thisNote < 4; thisNote++) {
     int noteDuration = 100/noteDurations2[thisNote];
     tone(buzzerpin, melody2[thisNote],noteDuration);
-    int pauseBetweenNotes = noteDuration + 50;     //delay between pulse
+    int pauseBetweenNotes = noteDuration + 50;     //retraso entre pulsos
     delay(pauseBetweenNotes);
-    noTone(buzzerpin);         // stop the tone playing
+    noTone(buzzerpin);         // detener el sonido del tono
   }
   }
